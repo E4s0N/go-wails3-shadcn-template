@@ -1,0 +1,29 @@
+version: '3'
+
+info:
+  productName: Desktop Template
+  productIdentifier: app.desktop.template
+  description: Wails 3 and shadcn desktop starter
+  version: 0.1.0
+
+dev_mode:
+  root_path: .
+  log_level: warn
+  debounce: 500
+  ignore:
+    dir: [.git, .task, bin, frontend]
+    file: ['*_test.go']
+    watched_extension: ['*.go']
+    git_ignore: true
+  executes:
+    - cmd: wails3 task dev:build
+      type: blocking
+    - cmd: wails3 task dev:frontend
+      type: background
+      readiness:
+        http: http://localhost:9250/
+        timeout: 60s
+        interval: 200ms
+    - cmd: wails3 task dev:run
+      type: primary
+      exit_policy: shutdown

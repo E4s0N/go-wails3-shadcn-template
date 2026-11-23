@@ -1,0 +1,63 @@
+version: '3'
+
+vars:
+  BIN: 'bin/go-wails3-shadcn-template{{if eq OS "windows"}}.exe{{end}}'
+  DEV_BIN: 'bin/go-wails3-shadcn-template-dev{{if eq OS "windows"}}.exe{{end}}'
+  VITE_PORT: 9250
+
+tasks:
+  install:
+    dir: frontend
+    sources: [package.json, package-lock.json]
+    generates: [node_modules/.package-lock.json]
+    cmds:
+      - npm ci --no-audit --no-fund
+
+  frontend:
+    deps: [install]
+    cmds:
+      - npm --prefix frontend run build
+
+  build:
+    desc: 构建桌面应用
+    deps: [frontend]
+    cmds:
+      - 'go build -tags production -trimpath{{if eq OS "windows"}} -ldflags="-H windowsgui"{{end}} -o "{{.BIN}}" .'
+
+  dev:build:
+    deps: [frontend]
+    cmds:
+      - 'go build -o "{{.DEV_BIN}}" .'
+
+  dev:frontend:
+    deps: [install]
+    cmds:
+      - npm --prefix frontend run dev
+
+  dev:run:
+    cmds:
+      - '"./{{.DEV_BIN}}"'
+
+  dev:
+    desc: 启动桌面开发模式
+    cmds:
+      - 'wails3 dev -config ./build/config.yml -port {{.VITE_PORT}}'
+
+  run:
+    desc: 启动已构建的应用
+    cmds:
+      - '"./{{.BIN}}"'
+
+  bindings:
+    desc: 重新生成 Wails TypeScript 绑定
+    cmds:
+      - wails3 generate bindings -ts -noevents .
+
+  check:
+    desc: 检查前端和 Go 代码
+    deps: [frontend]
+    cmds:
+      - npm --prefix frontend run lint
+      - npm --prefix frontend run format:check
+      - go test .
+      - go vet .
