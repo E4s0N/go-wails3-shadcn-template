@@ -1,4 +1,4 @@
-package main
+package windowsettings
 
 import (
 	"encoding/json"
@@ -21,7 +21,7 @@ type WindowSettings struct {
 	closeToTray bool
 }
 
-func loadWindowSettings() *WindowSettings {
+func Load(appID string) *WindowSettings {
 	settings := &WindowSettings{}
 	dir, err := os.UserConfigDir()
 	if err != nil {

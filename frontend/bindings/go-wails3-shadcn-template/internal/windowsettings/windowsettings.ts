@@ -10,13 +10,13 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 import * as $models from "./models.js";
 
 export function GetWindowBehavior(): $CancellablePromise<$models.WindowBehavior> {
-    return $Call.ByID(2572415587).then(($result: any) => {
+    return $Call.ByID(1580073239).then(($result: any) => {
         return $$createType0($result);
     });
 }
 
 export function SetCloseToTray(enabled: boolean): $CancellablePromise<void> {
-    return $Call.ByID(1716715458, enabled);
+    return $Call.ByID(2645134470, enabled);
 }
 
 // Private type creation functions

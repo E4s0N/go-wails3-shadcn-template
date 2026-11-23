@@ -39,9 +39,9 @@ go build -tags production -trimpath -ldflags="-H windowsgui" -o bin/go-wails3-sh
 
 ## 扩展位置
 
-- `main.go` 创建原生窗口并嵌入前端资源。从这里注册自己的 Wails 服务。
-- 用模板创建新应用时，请同步修改 `main.go` 的 `appID` 与 `build/config.yml` 的 `productIdentifier`，给新应用独立的配置目录和单实例标识。
-- `window_settings.go` 保存窗口偏好。修改绑定方法后运行 `wails3 task bindings`。
+- `main.go` 嵌入前端构建产物并启动应用。
+- `internal/app/app.go` 创建原生窗口和系统托盘，并注册 Wails 服务。用模板创建新应用时，请同步修改这里的 `appID` 与 `build/config.yml` 的 `productIdentifier`。
+- `internal/windowsettings/settings.go` 负责窗口偏好和持久化。修改服务的包路径或绑定方法后，运行 `wails3 task bindings` 更新 TypeScript 绑定。
 - `frontend/src/app.tsx` 维护路由与侧栏入口。页面组件放在 `frontend/src/pages`。
 - `frontend/src/components/AppShell.tsx` 是共享的窗口布局。`frontend/src/index.css` 定义主题变量。
 - `frontend/components.json` 配置 shadcn CLI。在 `frontend` 内运行 `npx shadcn@latest add <component>` 添加组件。
